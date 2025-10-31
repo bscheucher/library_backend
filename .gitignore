@@ -1,0 +1,264 @@
+# ========================
+# Compiled Java classes
+# ========================
+*.class
+target/
+build/
+out/
+bin/
+
+# ========================
+# Package Files
+# ========================
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ========================
+# Maven
+# ========================
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# ========================
+# Gradle
+# ========================
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
+# ========================
+# IntelliJ IDEA
+# ========================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# ========================
+# Eclipse
+# ========================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+.metadata
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# ========================
+# NetBeans
+# ========================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ========================
+# VS Code
+# ========================
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# ========================
+# Spring Boot
+# ========================
+spring-boot-starter-parent/
+*.pid
+*.orig
+*.log
+
+# ========================
+# Application Properties
+# ========================
+# Sensitive configuration files
+application-local.properties
+application-local.yml
+application-local.yaml
+application-secret.properties
+application-secret.yml
+application-secret.yaml
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================
+# Logs
+# ========================
+logs/
+log/
+*.log
+*.gz
+*.log.*
+
+# ========================
+# Database
+# ========================
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+*.trace.db
+
+# H2 Database files
+/data/
+/database/
+/db/
+
+# ========================
+# OS Files
+# ========================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ========================
+# Testing
+# ========================
+/test-output/
+/test-results/
+/coverage/
+*.exec
+jacoco.exec
+
+# ========================
+# Node.js (if using frontend)
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================
+# Docker
+# ========================
+*.dockerignore
+docker-compose.override.yml
+
+# ========================
+# Kubernetes
+# ========================
+*.kubeconfig
+*-secret.yaml
+*-secret.yml
+
+# ========================
+# Certificates & Keys
+# ========================
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.truststore
+*.keystore
+
+# ========================
+# Backup files
+# ========================
+*.backup
+*.old
+*.save
+
+# ========================
+# Maven Wrapper (include these)
+# ========================
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ========================
+# Gradle Wrapper (include these)
+# ========================
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ========================
+# Custom / Project Specific
+# ========================
+# Uploaded files directory (if storing locally)
+uploads/
+temp/
+tmp/
+
+# Generated documentation
+/docs/generated/
+/javadoc/
+
+# Performance test results
+/performance/
+
+# Local configuration overrides
+config/local/
