@@ -48,7 +48,8 @@ public class Member {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Address address;
 
     @Column(name = "date_of_birth")

@@ -1,83 +1,72 @@
 package com.scheucher.library.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.temporal.ChronoUnit;
 
 @Entity
-@Table(name = "members")
+@Table(name = "loans")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Loan {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Member code is required")
-    @Column(name = "member_code", unique = true, nullable = false)
-    private String memberCode; // Unique library card number
+    // Many-to-One relationship with Book
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    @NotNull(message = "Book is required")
+    private Book book;
 
-    @NotBlank(message = "First name is required")
-    @Size(max = 100)
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+    // Many-to-One relationship with Member
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull(message = "Member is required")
+    private Member member;
 
-    @NotBlank(message = "Last name is required")
-    @Size(max = 100)
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Column(name = "loan_date", nullable = false)
+    private LocalDate loanDate;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column(name = "due_date", nullable = false)
+    private LocalDate dueDate;
 
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Invalid phone number")
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    @Embedded
-    private RabbitConnectionDetails.Address address;
-
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "membership_type", nullable = false)
-    private MembershipType membershipType = MembershipType.STANDARD;
-
-    @Column(name = "membership_start_date", nullable = false)
-    private LocalDate membershipStartDate;
-
-    @Column(name = "membership_end_date")
-    private LocalDate membershipEndDate;
+    @Column(name = "return_date")
+    private LocalDate returnDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MemberStatus status = MemberStatus.ACTIVE;
+    private LoanStatus status = LoanStatus.ACTIVE;
 
-    @Column(name = "max_books_allowed")
-    private Integer maxBooksAllowed = 5; // Based on membership type
+    @Column(name = "renewal_count")
+    private Integer renewalCount = 0;
 
-    @Column(name = "outstanding_fees")
-    private Double outstandingFees = 0.0;
+    @Column(name = "max_renewals")
+    private Integer maxRenewals = 2;
 
-    // One-to-Many relationship with Loan
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Set<Loan> loans = new HashSet<>();
+    @Column(name = "fine_amount")
+    private Double fineAmount = 0.0;
+
+    @Column(name = "fine_paid")
+    private Boolean finePaid = false;
+
+    @Column(name = "notes")
+    private String notes;
+
+    // Staff member who issued the loan
+    @Column(name = "issued_by")
+    private String issuedBy;
+
+    // Staff member who processed the return
+    @Column(name = "returned_to")
+    private String returnedTo;
 
     // Audit fields
     @Column(name = "created_at", updatable = false)
@@ -90,8 +79,11 @@ public class Loan {
     protected void onCreate() {
         createdAt = LocalDate.now();
         updatedAt = LocalDate.now();
-        if (membershipStartDate == null) {
-            membershipStartDate = LocalDate.now();
+        if (loanDate == null) {
+            loanDate = LocalDate.now();
+        }
+        if (dueDate == null) {
+            dueDate = loanDate.plusDays(14); // Default loan period of 14 days
         }
     }
 
@@ -100,16 +92,35 @@ public class Loan {
         updatedAt = LocalDate.now();
     }
 
-    // Helper method to check if membership is valid
-    public boolean isMembershipValid() {
-        return status == MemberStatus.ACTIVE &&
-                (membershipEndDate == null || membershipEndDate.isAfter(LocalDate.now()));
+    // Helper method to calculate if loan is overdue
+    public boolean isOverdue() {
+        return status == LoanStatus.ACTIVE &&
+                LocalDate.now().isAfter(dueDate);
     }
 
-    // Helper method to get full name
-    public String getFullName() {
-        return firstName + " " + lastName;
+    // Helper method to calculate days overdue
+    public long getDaysOverdue() {
+        if (!isOverdue()) {
+            return 0;
+        }
+        return ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+    }
+
+    // Helper method to calculate fine (assuming $0.50 per day)
+    public double calculateFine() {
+        if (!isOverdue()) {
+            return 0.0;
+        }
+        return getDaysOverdue() * 0.50;
+    }
+
+    // Helper method to renew loan
+    public boolean renewLoan(int days) {
+        if (renewalCount >= maxRenewals || isOverdue()) {
+            return false;
+        }
+        this.dueDate = this.dueDate.plusDays(days);
+        this.renewalCount++;
+        return true;
     }
 }
-
-
