@@ -60,13 +60,13 @@ public class Loan {
     @Column(name = "notes")
     private String notes;
 
-    // Staff member who issued the loan
-    @Column(name = "issued_by")
-    private String issuedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "issued_by_employee_id")
+    private Employee issuedBy;
 
-    // Staff member who processed the return
-    @Column(name = "returned_to")
-    private String returnedTo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "returned_to_employee_id")
+    private Employee returnedTo;
 
     // Audit fields
     @Column(name = "created_at", updatable = false)

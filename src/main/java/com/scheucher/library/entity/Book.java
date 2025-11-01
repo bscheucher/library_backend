@@ -25,7 +25,7 @@ public class Book {
     private Long id;
 
     @NotBlank(message = "ISBN is required")
-    @Pattern(regexp = "^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$)[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$",
+    @Pattern(regexp = "^(97[89])?[0-9]{9}[0-9X]$|^(97[89]-?)?[0-9]{1,5}-?[0-9]{1,7}-?[0-9]{1,7}-?[0-9X]$",
             message = "Invalid ISBN format")
     @Column(unique = true, nullable = false)
     private String isbn;

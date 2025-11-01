@@ -1,6 +1,5 @@
 package com.scheucher.library.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,26 +8,23 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "members")
+@Table(name = "employees")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Member code is required")
-    @Column(name = "member_code", unique = true, nullable = false)
-    private String memberCode; // Unique library card number
+    @NotBlank(message = "Employee ID is required")
+    @Column(name = "employee_id, unique = true, nullable = false")
+    private String employeeId;
 
     @NotBlank(message = "First name is required")
     @Size(max = 100)
@@ -40,7 +36,6 @@ public class Member {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Nullable
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", unique = true)
     private User user;
@@ -61,19 +56,13 @@ public class Member {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "membership_type", nullable = false)
-    private MembershipType membershipType = MembershipType.STANDARD;
+    @Column(name = "employment_start_date", nullable = false)
+    private LocalDate employmentStartDate;
 
-    @Column(name = "membership_start_date", nullable = false)
-    private LocalDate membershipStartDate;
+    @Column(name = "employment_end_date")
+    private LocalDate employmentEndDate;
 
-    @Column(name = "membership_end_date")
-    private LocalDate membershipEndDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MemberStatus status = MemberStatus.ACTIVE;
 
     @Column(name = "max_books_allowed")
     private Integer maxBooksAllowed = 5; // Based on membership type
@@ -81,10 +70,7 @@ public class Member {
     @Column(name = "outstanding_fees")
     private Double outstandingFees = 0.0;
 
-    // One-to-Many relationship with Loan
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Set<Loan> loans = new HashSet<>();
+
 
     // Audit fields
     @Column(name = "created_at", updatable = false)
@@ -97,8 +83,8 @@ public class Member {
     protected void onCreate() {
         createdAt = LocalDate.now();
         updatedAt = LocalDate.now();
-        if (membershipStartDate == null) {
-            membershipStartDate = LocalDate.now();
+        if (employmentStartDate == null) {
+            employmentStartDate = LocalDate.now();
         }
     }
 
@@ -107,11 +93,6 @@ public class Member {
         updatedAt = LocalDate.now();
     }
 
-    // Helper method to check if membership is valid
-    public boolean isMembershipValid() {
-        return status == MemberStatus.ACTIVE &&
-                (membershipEndDate == null || membershipEndDate.isAfter(LocalDate.now()));
-    }
 
     // Helper method to get full name
     public String getFullName() {
