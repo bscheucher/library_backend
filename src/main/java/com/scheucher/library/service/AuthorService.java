@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)  // Default for read operations
 public class AuthorService {
 
     private final AuthorRepository authorRepository;

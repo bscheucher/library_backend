@@ -33,6 +33,13 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<BookResponse>> createBooks(
+            @Valid @RequestBody List<BookCreateRequest> requests) {
+        List<BookResponse> books = bookService.createBooks(requests);
+        return ResponseEntity.status(HttpStatus.CREATED).body(books);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<BookResponse> updateBook(
             @PathVariable Long id,

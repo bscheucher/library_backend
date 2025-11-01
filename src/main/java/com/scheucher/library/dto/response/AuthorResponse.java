@@ -16,6 +16,5 @@ public class AuthorResponse {
     private String website;
     private String email;
     private Integer bookCount;
-    private boolean isAlive;
     private Integer age;
 }

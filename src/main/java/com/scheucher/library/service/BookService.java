@@ -71,4 +71,20 @@ public class BookService {
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
     }
+
+
+    // Batch operations
+    @Transactional
+    public List<BookResponse> createBooks(List<BookCreateRequest> requests) {
+        List<Book> books = requests.stream()
+                .map(bookMapper::toEntity)
+                .collect(Collectors.toList());
+
+        List<Book> savedBooks = bookRepository.saveAll(books);
+
+        return savedBooks.stream()
+                .map(bookMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
 }

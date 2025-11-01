@@ -80,10 +80,6 @@ public class Author {
         return firstName + " " + lastName;
     }
 
-    // Helper method to check if author is alive
-    public boolean isAlive() {
-        return dateOfDeath == null;
-    }
 
     // Helper method to get age
     public Integer getAge() {

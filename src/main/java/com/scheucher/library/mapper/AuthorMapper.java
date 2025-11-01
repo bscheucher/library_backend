@@ -12,7 +12,6 @@ public interface AuthorMapper {
 
     @Mapping(target = "bookCount", expression = "java(author.getBooks() != null ? author.getBooks().size() : 0)")
     @Mapping(target = "fullName", expression = "java(author.getFullName())")
-    @Mapping(target = "isAlive", expression = "java(author.isAlive())")
     @Mapping(target = "age", expression = "java(author.getAge())")
     AuthorResponse toResponse(Author author);
 
