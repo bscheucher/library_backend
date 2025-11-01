@@ -4,6 +4,7 @@ import com.scheucher.library.dto.request.AuthorCreateRequest;
 import com.scheucher.library.dto.request.AuthorUpdateRequest;
 import com.scheucher.library.dto.response.AuthorResponse;
 import com.scheucher.library.entity.Author;
+import com.scheucher.library.exception.ResourceNotFoundException;
 import com.scheucher.library.mapper.AuthorMapper;
 import com.scheucher.library.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +31,11 @@ public class AuthorService {
     public AuthorResponse getAuthorById(Long id) {
         Author author = authorRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author", "id", id));
         return authorMapper.toResponse(author);
     }
 
-    @Transactional  // Override for write operation
+    @Transactional
     public AuthorResponse createAuthor(AuthorCreateRequest request) {
         // Convert request DTO to entity
         Author author = authorMapper.toEntity(request);
@@ -50,7 +51,7 @@ public class AuthorService {
     public AuthorResponse updateAuthor(Long id, AuthorUpdateRequest request) {
         Author author = authorRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author", "id", id));
 
         // Update entity from DTO
         authorMapper.updateEntityFromDto(request, author);
@@ -63,7 +64,7 @@ public class AuthorService {
     @Transactional
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
-            throw new RuntimeException("Author not found with id: " + id);
+            throw new ResourceNotFoundException("Author", "id", id);
         }
         authorRepository.deleteById(id);
     }
