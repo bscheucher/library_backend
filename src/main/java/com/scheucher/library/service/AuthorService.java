@@ -22,41 +22,34 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
 
     public List<AuthorResponse> getAllAuthors() {
-        return authorRepository.findAll()
+        // ✅ CHANGED: Use eager fetch method
+        return authorRepository.findAllWithBooks()
                 .stream()
                 .map(authorMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public AuthorResponse getAuthorById(Long id) {
-        Author author = authorRepository
-                .findById(id)
+        // ✅ CHANGED: Use eager fetch method
+        Author author = authorRepository.findByIdWithBooks(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", "id", id));
         return authorMapper.toResponse(author);
     }
 
     @Transactional
     public AuthorResponse createAuthor(AuthorCreateRequest request) {
-        // Convert request DTO to entity
         Author author = authorMapper.toEntity(request);
-
-        // Save the entity
         Author savedAuthor = authorRepository.save(author);
-
-        // Convert saved entity to response DTO
         return authorMapper.toResponse(savedAuthor);
     }
 
     @Transactional
     public AuthorResponse updateAuthor(Long id, AuthorUpdateRequest request) {
-        Author author = authorRepository
-                .findById(id)
+        Author author = authorRepository.findByIdWithBooks(id)  // ✅ CHANGED
                 .orElseThrow(() -> new ResourceNotFoundException("Author", "id", id));
 
-        // Update entity from DTO
         authorMapper.updateEntityFromDto(request, author);
 
-        // Save and return response
         Author updatedAuthor = authorRepository.save(author);
         return authorMapper.toResponse(updatedAuthor);
     }
@@ -69,7 +62,6 @@ public class AuthorService {
         authorRepository.deleteById(id);
     }
 
-    // Batch operations
     @Transactional
     public List<AuthorResponse> createAuthors(List<AuthorCreateRequest> requests) {
         List<Author> authors = requests.stream()
@@ -83,7 +75,6 @@ public class AuthorService {
                 .collect(Collectors.toList());
     }
 
-    // Search operations
     public List<AuthorResponse> findAuthorsByLastName(String lastName) {
         return authorRepository.findByLastName(lastName)
                 .stream()

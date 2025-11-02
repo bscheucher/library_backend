@@ -23,7 +23,7 @@ public class Employee {
     private Long id;
 
     @NotBlank(message = "Employee ID is required")
-    @Column(name = "employee_id, unique = true, nullable = false")
+    @Column(name = "employee_id", unique = true, nullable = false)
     private String employeeId;
 
     @NotBlank(message = "First name is required")

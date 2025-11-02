@@ -2,6 +2,7 @@ package com.scheucher.library.controller;
 
 import com.scheucher.library.dto.request.BookCreateRequest;
 import com.scheucher.library.dto.response.BookResponse;
+import com.scheucher.library.entity.Book;
 import com.scheucher.library.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,9 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
+        List<BookResponse> bookResponses = bookService.getAllBooks();
+        System.out.println("!!!!!!!!!!!!!!BOOK RESPONSES IN CONTROLLER!!!!!!!!!!!!: " + bookResponses.toString());
+        return ResponseEntity.ok(bookResponses);
     }
 
     @GetMapping("/{id}")

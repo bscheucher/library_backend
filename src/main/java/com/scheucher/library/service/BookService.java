@@ -27,6 +27,11 @@ public class BookService {
     private final BookMapper bookMapper;
 
     public List<BookResponse> getAllBooks() {
+        List<BookResponse> bookResponsesInService = bookRepository.findAllWithAuthors() // CHANGED: Use eager fetch method
+                .stream()
+                .map(bookMapper::toResponse)
+                .toList();
+        System.out.println("!!!!!!!!!!!!!!!!!!BOOK RESPONSES IN SERVICE: !!!!!!!!!!!!!!!!! " + bookResponsesInService);
         return bookRepository.findAllWithAuthors() // CHANGED: Use eager fetch method
                 .stream()
                 .map(bookMapper::toResponse)
