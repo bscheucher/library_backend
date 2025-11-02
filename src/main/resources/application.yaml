@@ -12,9 +12,19 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: true  # Optional: helps with debugging
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
   h2:
     console:
       enabled: true
-      path: /h2-console  # Optional: sets the console URL path
+      path: /h2-console
+
+# Enable detailed logging
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.scheucher.library: DEBUG

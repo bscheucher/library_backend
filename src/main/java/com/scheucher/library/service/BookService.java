@@ -27,14 +27,14 @@ public class BookService {
     private final BookMapper bookMapper;
 
     public List<BookResponse> getAllBooks() {
-        return bookRepository.findAll()
+        return bookRepository.findAllWithAuthors() // CHANGED: Use eager fetch method
                 .stream()
                 .map(bookMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public BookResponse getBookById(Long id) {
-        Book book = bookRepository.findById(id)
+        Book book = bookRepository.findByIdWithAuthors(id) // CHANGED: Use eager fetch method
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
         return bookMapper.toResponse(book);
     }
@@ -61,12 +61,16 @@ public class BookService {
         }
 
         Book savedBook = bookRepository.save(book);
-        return bookMapper.toResponse(savedBook);
+        // Re-fetch with authors to ensure they're loaded
+        return bookMapper.toResponse(
+                bookRepository.findByIdWithAuthors(savedBook.getId())
+                        .orElse(savedBook)
+        );
     }
 
     @Transactional
     public BookResponse updateBook(Long id, BookCreateRequest request) {
-        Book book = bookRepository.findById(id)
+        Book book = bookRepository.findByIdWithAuthors(id)  // Changed this
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
 
         // Check if ISBN is being changed to one that already exists
@@ -87,6 +91,8 @@ public class BookService {
                 throw new BadRequestException("One or more author IDs are invalid");
             }
 
+            // Clear existing authors and set new ones
+            book.getAuthors().clear();
             book.setAuthors(authors);
         }
 
@@ -111,7 +117,13 @@ public class BookService {
 
         List<Book> savedBooks = bookRepository.saveAll(books);
 
-        return savedBooks.stream()
+        // Re-fetch with authors
+        List<Long> bookIds = savedBooks.stream()
+                .map(Book::getId)
+                .toList();
+
+        return bookRepository.findAllWithAuthors().stream()
+                .filter(book -> bookIds.contains(book.getId()))
                 .map(bookMapper::toResponse)
                 .collect(Collectors.toList());
     }
