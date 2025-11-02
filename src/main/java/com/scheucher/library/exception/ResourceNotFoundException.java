@@ -1,5 +1,8 @@
 package com.scheucher.library.exception;
 
+import lombok.Getter;
+
+@Getter
 public class ResourceNotFoundException extends RuntimeException {
     private String resourceName;
     private String fieldName;
@@ -16,15 +19,4 @@ public class ResourceNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public String getResourceName() {
-        return resourceName;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Object getFieldValue() {
-        return fieldValue;
-    }
 }
